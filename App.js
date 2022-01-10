@@ -1,7 +1,7 @@
+import React from 'react';
 import {StatusBar} from 'expo-status-bar';
 import SafeAreaView from './components/SafeAreaView';
-import List from "./components/List";
-
+import List from './components/List';
 
 const App = () => {
   return (
@@ -12,7 +12,6 @@ const App = () => {
       <StatusBar style="auto" />
     </>
   );
-}
-
+};
 
 export default App;
