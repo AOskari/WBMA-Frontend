@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import PropTypes from "prop-types";
 
 const itemMarginSize = 10;
 
@@ -8,14 +9,14 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     margin: itemMarginSize,
     marginTop: itemMarginSize / 2,
-    marginBottom:itemMarginSize / 2,
+    marginBottom:itemMarginSize / 2, 
     backgroundColor: "#F8F8FF",
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: "row",
     height: "auto",
     borderRadius: 15,
-    shadowColor: "#000",
+    shadowColor: "#000", 
     shadowOffset: {
       width: 0,
       height: 2,
@@ -63,6 +64,12 @@ const ListItem = ({singleMedia}) => {
       </View>
     </TouchableOpacity>
   );
+};
+
+ListItem.propTypes = {
+  singleMedia: PropTypes.object,
 }
+
+
 
 export default ListItem;
