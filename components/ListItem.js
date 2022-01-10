@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import PropTypes from 'prop-types';
 
 const itemMarginSize = 10;
-
+const url = 'https://media.mw.metropolia.fi/wbma/uploads/';
 const styles = StyleSheet.create({
   rowItem: {
     display: 'flex',
@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     height: 'auto',
+    minHeight: 200,
     borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: {
@@ -55,7 +56,7 @@ const ListItem = ({singleMedia}) => {
     <TouchableOpacity style={styles.rowItem}>
       <Image
         style={styles.rowItemImage}
-        source={{uri: singleMedia.thumbnails.w160}}
+        source={{uri: url + singleMedia.thumbnails.w160}}
       />
       <View style={styles.rowItemInfo}>
         <Text style={styles.rowItemTitle}>{singleMedia.title}</Text>
