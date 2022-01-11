@@ -51,16 +51,24 @@ const styles = StyleSheet.create({
   },
 });
 
-const ListItem = ({singleMedia}) => {
+const ListItem = (props) => {
   return (
-    <TouchableOpacity style={styles.rowItem}>
+    <TouchableOpacity
+      style={styles.rowItem}
+      onPress={(item) => {
+        props.navigation.navigate('Single', {
+          title: props.singleMedia.title,
+          url: url + props.singleMedia.thumbnails.w160,
+        });
+      }}
+    >
       <Image
         style={styles.rowItemImage}
-        source={{uri: url + singleMedia.thumbnails.w160}}
+        source={{uri: url + props.singleMedia.thumbnails.w160}}
       />
       <View style={styles.rowItemInfo}>
-        <Text style={styles.rowItemTitle}>{singleMedia.title}</Text>
-        <Text>{singleMedia.description}</Text>
+        <Text style={styles.rowItemTitle}>{props.singleMedia.title}</Text>
+        <Text>{props.singleMedia.description}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -68,6 +76,7 @@ const ListItem = ({singleMedia}) => {
 
 ListItem.propTypes = {
   singleMedia: PropTypes.object,
+  navigation: PropTypes.object,
 };
 
 export default ListItem;
