@@ -5,9 +5,10 @@ import {MainContext} from '../contexts/MainContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({navigation}) => {
-  const [isLoggedIn, setIsLoggedIn] = useContext(MainContext);
+  const {isLoggedIn, setIsLoggedIn, user} = useContext(MainContext);
 
   console.log('profile isLoggedIn', isLoggedIn);
+  console.log(`User data: ${JSON.stringify(user)}`);
   const logout = async () => {
     try {
       setIsLoggedIn(false);
@@ -20,6 +21,9 @@ const Profile = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text>Profile</Text>
+      <Text>{user.username}</Text>
+      <Text>{user.email}</Text>
+      <Text>{user.full_name || 'Full name not found'}</Text>
       <Button title={'Logout'} onPress={logout} />
     </SafeAreaView>
   );

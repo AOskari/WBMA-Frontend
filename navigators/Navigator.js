@@ -22,7 +22,8 @@ const TabScreen = () => {
 };
 
 const StackScreen = () => {
-  const [isLoggedIn] = useContext(MainContext);
+  const {isLoggedIn} = useContext(MainContext);
+  console.log(`Checking isLoggedIn: ${isLoggedIn}`);
   if (isLoggedIn) {
     return (
       <Stack.Navigator>
@@ -38,6 +39,12 @@ const StackScreen = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen
+        name="Tabs"
+        component={TabScreen}
+        options={{hide: 'header'}}
+      />
+      <Stack.Screen name="Single" component={Single} />
     </Stack.Navigator>
   );
 };
