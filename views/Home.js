@@ -6,19 +6,21 @@ import PropTypes from 'prop-types';
 
 const Home = ({navigation}) => {
   return (
-    <SafeAreaView>
-      <View style={styles.view}>
-        <ImageBackground
-          source={require('../assets/cat.jpg')}
-          resizeMode="cover"
-          style={styles.image}
-          borderRadius={10}
-        >
-          <Text style={styles.text}>Came to see some cats, eh?</Text>
-        </ImageBackground>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.viewContainer}>
+        <View style={styles.view}>
+          <ImageBackground
+            source={require('../assets/cat.jpg')}
+            resizeMode="cover"
+            style={styles.image}
+            borderRadius={10}
+          >
+            <Text style={styles.text}>Came to see some cats, eh?</Text>
+          </ImageBackground>
+        </View>
 
-      <List navigation={navigation} styles={styles.list} />
+        <List navigation={navigation} styles={styles.list} />
+      </View>
     </SafeAreaView>
   );
 };
@@ -26,6 +28,10 @@ const Home = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     padding: 0,
+  },
+  viewContainer: {
+    width: '100%',
+    height: '100%',
   },
   image: {
     height: '100%',
