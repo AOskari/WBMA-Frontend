@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
     height: '100%',
     flexGrow: 0.5,
     padding: 10,
-    alignItems: 'center',
     borderTopRightRadius: 15,
     borderBottomRightRadius: 15,
   },
@@ -67,7 +66,9 @@ const ListItem = (props) => {
         source={{uri: url + props.singleMedia.thumbnails.w160}}
       />
       <View style={styles.rowItemInfo}>
-        <Text style={styles.rowItemTitle}>{props.singleMedia.title}</Text>
+        <Text style={styles.rowItemTitle}>
+          {props.singleMedia.title || '404 title not found'}
+        </Text>
         <Text>{props.singleMedia.description}</Text>
       </View>
     </TouchableOpacity>

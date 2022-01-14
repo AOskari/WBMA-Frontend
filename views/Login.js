@@ -44,7 +44,7 @@ const Login = ({navigation}) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'android' ? 'padding' : 'height'}
       style={styles.view}
     >
       <TouchableOpacity
