@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {StyleSheet, View, Text, Button, TextInput} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import {Button, Input, Text} from 'react-native-elements';
 import {useLogin} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 
@@ -27,47 +28,39 @@ const LoginForm = ({navigation}) => {
   };
 
   return (
-    <View>
-      <Text>Sign in</Text>
-      <Text>Username</Text>
-      <TextInput
-        style={styles.input}
-        name="username"
-        type="text"
-        value={username}
-        autoCapitalize={'none'}
-        placeholder={'username'}
-        required
-        onChangeText={(text) => setUsername(text)}
-      />
-      <Text>Password</Text>
-      <TextInput
-        style={styles.input}
-        name="password"
-        type="text"
-        value={password}
-        autoComplete={'off'}
-        autoCapitalize={'none'}
-        secureTextEntry={true}
-        placeholder={'password'}
-        required
-        onChangeText={(text) => setPassword(text)}
-      />
-      <Button title="Sign in" onPress={handleSubmit} />
-    </View>
+    <>
+      <View style={styles.view}>
+        <Text h4>Login</Text>
+        <Input
+          name="username"
+          type="text"
+          value={username}
+          autoCapitalize={'none'}
+          placeholder="username"
+          required
+          onChangeText={(text) => setUsername(text)}
+        />
+        <Input
+          name="password"
+          type="text"
+          value={password}
+          autoComplete={'off'}
+          autoCapitalize={'none'}
+          secureTextEntry={true}
+          placeholder={'password'}
+          required
+          onChangeText={(text) => setPassword(text)}
+        />
+        <Button title="Sign in" onPress={handleSubmit} />
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
-    width: 300,
-    height: 40,
-    backgroundColor: 'whitesmoke',
-    borderRadius: 20,
-    paddingLeft: 15,
+  view: {
+    width: '90%',
     alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 5,
   },
 });
 

@@ -2,7 +2,6 @@ import React, {useContext, useEffect} from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
@@ -21,6 +20,7 @@ const Login = ({navigation}) => {
   const checkToken = async () => {
     console.log('checking token');
     const {getUserByToken} = useUser();
+
     try {
       const userToken = await AsyncStorage.getItem('userToken');
       const user = await getUserByToken(userToken);
@@ -44,7 +44,7 @@ const Login = ({navigation}) => {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.view}
     >
       <TouchableOpacity
@@ -53,7 +53,6 @@ const Login = ({navigation}) => {
         activeOpacity={1}
       >
         <View style={styles.container}>
-          <Text>Login</Text>
           <LoginForm navigation={navigation} />
           <RegisterForm navigation={navigation}></RegisterForm>
         </View>
@@ -65,9 +64,8 @@ const Login = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
   },
   view: {
     flex: 1,

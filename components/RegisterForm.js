@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Button, TextInput} from 'react-native';
+import {StyleSheet, View} from 'react-native';
+import {Button, Input, Text} from 'react-native-elements';
 import {useUser} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 
@@ -30,11 +31,9 @@ const RegisterForm = ({navigation}) => {
   };
 
   return (
-    <View>
-      <Text>Register new user</Text>
-      <Text>Username</Text>
-      <TextInput
-        style={styles.input}
+    <View style={styles.view}>
+      <Text h4>Register</Text>
+      <Input
         name="username"
         type="text"
         value={username}
@@ -43,9 +42,7 @@ const RegisterForm = ({navigation}) => {
         required
         onChangeText={(text) => setUsername(text)}
       />
-      <Text>Password</Text>
-      <TextInput
-        style={styles.input}
+      <Input
         name="password"
         type="text"
         value={password}
@@ -56,8 +53,7 @@ const RegisterForm = ({navigation}) => {
         required
         onChangeText={(text) => setPassword(text)}
       />
-      <TextInput
-        style={styles.input}
+      <Input
         name="email"
         type="email"
         value={email}
@@ -67,8 +63,7 @@ const RegisterForm = ({navigation}) => {
         required
         onChangeText={(text) => setEmail(text)}
       />
-      <TextInput
-        style={styles.input}
+      <Input
         name="full_name"
         type="text"
         value={fullName}
@@ -83,15 +78,9 @@ const RegisterForm = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
-  input: {
-    width: 300,
-    height: 40,
-    backgroundColor: 'whitesmoke',
-    borderRadius: 20,
-    paddingLeft: 15,
+  view: {
+    width: '90%',
     alignItems: 'center',
-    justifyContent: 'center',
-    elevation: 5,
   },
 });
 

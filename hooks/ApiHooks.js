@@ -1,4 +1,5 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useContext} from 'react';
+import {MainContext} from '../contexts/MainContext';
 
 const url = 'https://media.mw.metropolia.fi/wbma/media/';
 
@@ -67,7 +68,7 @@ const useUser = () => {
         headers: {'x-access-token': token},
       };
       const response = await fetch(baseUrl + 'users/user', options);
-      const userData = response.json();
+      const userData = await response.json();
       if (response.ok) {
         return userData;
       } else {
@@ -80,7 +81,6 @@ const useUser = () => {
 
   const postUser = async (data) => {
     const options = {
-      // TODO: add method, headers and body for sending json data with POST
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -88,7 +88,6 @@ const useUser = () => {
       body: JSON.stringify(data),
     };
     try {
-      // TODO: use fetch to send request to users endpoint and return the result as json, handle errors with try/catch and response.ok
       const response = await fetch(baseUrl + 'users', options);
       const json = await response.json();
       if (response.ok) return json;
@@ -97,7 +96,42 @@ const useUser = () => {
     }
   };
 
-  return {getUserByToken, postUser};
+  return {getUserByToken, postUser, getUserImage};
 };
 
-export {useMedia, useLogin, useUser};
+const getUserImage = () => {
+  const [avatar, setAvatar] = useState('http://placekitten.com/640');
+  const {user} = useContext(MainContext);
+
+  const getImg = async () => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const uri =
+        'https://media.mw.metropolia.fi/wbma/tags/avatar_' + user.user_id;
+
+      const response = await fetch(uri, options);
+      const json = await response.json();
+
+      const src =
+        'https://media.mw.metropolia.fi/wbma/uploads/' + json[0].filename;
+
+      setAvatar(src);
+    } catch (e) {
+      console.log(`Error at getUserImage: ${e.message}`);
+    }
+  };
+
+  useEffect(async () => {
+    getImg();
+    console.log('getUserImage useEffect called.');
+  }, [user]);
+
+  return {avatar};
+};
+
+export {useMedia, useLogin, useUser, getUserImage};
