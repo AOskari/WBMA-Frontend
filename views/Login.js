@@ -24,6 +24,7 @@ const Login = ({navigation}) => {
     console.log('checking token');
     const {getUserByToken} = useUser();
 
+    // Checking if user has already logged in.
     try {
       const userToken = await AsyncStorage.getItem('userToken');
       const user = await getUserByToken(userToken);

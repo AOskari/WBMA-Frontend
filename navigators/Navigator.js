@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {StyleSheet} from 'react-native';
@@ -8,6 +8,7 @@ import Home from '../views/Home';
 import Profile from '../views/Profile';
 import Single from '../views/Single';
 import Login from '../views/Login';
+import Upload from '../views/Upload';
 import {MainContext} from '../contexts/MainContext';
 
 const Tab = createBottomTabNavigator();
@@ -15,12 +16,6 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const TabScreen = () => {
-  const {listEndReached} = useContext(MainContext);
-
-  useEffect(() => {
-    console.log(`listEndReached is ${listEndReached}`);
-  }, [listEndReached]);
-
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -28,22 +23,21 @@ const TabScreen = () => {
           let iconName;
           if (route.name === 'Home') iconName = 'home';
           else if (route.name === 'Profile') iconName = 'person';
-          else if (route.name === 'Settings') iconName = 'settings';
+          else if (route.name === 'Upload') iconName = 'cloud-upload';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'white',
         tabBarLabelStyle: styles.tabBarLabel,
-        tabBarStyle: listEndReached ? styles.bottomNavHide : styles.bottomNav,
+        tabBarStyle: styles.bottomNav,
       })}
     >
       <Tab.Screen name="Home" options={{headerShown: false}} component={Home} />
       <Tab.Screen name="Profile" component={Profile} />
-      {/** Placeholder nav button */}
       <Tab.Screen
-        name="Settings"
+        name="Upload"
         options={{headerShown: false}}
-        component={Home}
+        component={Upload}
       />
     </Tab.Navigator>
   );
@@ -61,6 +55,7 @@ const StackScreen = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen name="Single" component={Single} />
+        <Stack.Screen name="Upload" component={Upload} />
       </Stack.Navigator>
     );
   }
@@ -83,13 +78,7 @@ const styles = StyleSheet.create({
     flexWrap: 'nowrap',
     backgroundColor: '#007FFF',
     height: 60,
-    borderRadius: 50,
-    padding: 10,
     elevation: 10,
-    margin: 5,
-    position: 'absolute',
-    left: 40,
-    right: 40,
   },
   bottomNavHide: {
     display: 'none',
@@ -102,7 +91,7 @@ const styles = StyleSheet.create({
 const Navigator = () => {
   return (
     <NavigationContainer>
-      <StackScreen stlye={styles.bottomNav} />
+      <StackScreen />
     </NavigationContainer>
   );
 };

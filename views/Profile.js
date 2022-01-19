@@ -21,11 +21,6 @@ const Profile = ({navigation}) => {
     }
   };
 
-  /*   useEffect(() => {
-    checkToken();
-  }, []);
-   */
-
   return (
     <SafeAreaView style={styles.container}>
       <Card containerStyle={styles.card}>

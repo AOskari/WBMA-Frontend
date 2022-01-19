@@ -27,7 +27,6 @@ const RegisterForm = () => {
   const {
     control,
     handleSubmit,
-    register,
     formState: {errors},
     getValues,
   } = useForm({mode: 'onBlur'});
@@ -160,7 +159,7 @@ const RegisterForm = () => {
       />
       <Controller
         control={control}
-        name="full_name"
+        name="fullName"
         render={({field: {onChange, value, onBlur}}) => (
           <Input
             type="text"

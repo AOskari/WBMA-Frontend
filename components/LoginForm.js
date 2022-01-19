@@ -1,12 +1,14 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {StyleSheet, View} from 'react-native';
 import {Button, Input, Text} from 'react-native-elements';
 import {useLogin} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import {useForm, Controller} from 'react-hook-form';
+import {MainContext} from '../contexts/MainContext';
 
 const LoginForm = ({navigation}) => {
+  const {setUser} = useContext(MainContext);
   const {
     control,
     handleSubmit,
@@ -22,6 +24,8 @@ const LoginForm = ({navigation}) => {
     try {
       console.log('Button pressed');
       const response = await postLogin(data);
+      setUser(response.user);
+      console.log('response at LoginForm: ', response);
       if (response.message == 'Logged in successfully') {
         await AsyncStorage.setItem('userToken', response.token);
         navigation.navigate('Tabs');

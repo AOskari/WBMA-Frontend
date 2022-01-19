@@ -1,18 +1,19 @@
-import React from 'react';
-import {FlatList, View, StyleSheet} from 'react-native';
+import React, {useContext} from 'react';
+import {FlatList} from 'react-native';
 import ListItem from './ListItem';
 import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
+import {MainContext} from '../contexts/MainContext';
 
 const List = ({navigation, styles}) => {
-  const {mediaArray} = useMedia();
+  const {update} = useContext(MainContext);
+  const {mediaArray} = useMedia(update);
 
   return (
     <FlatList
       style={styles}
       data={mediaArray}
       showsVerticalScrollIndicator={false}
-      ListFooterComponent={footer}
       renderItem={({item}) => (
         <ListItem singleMedia={item} navigation={navigation} />
       )}
@@ -20,12 +21,6 @@ const List = ({navigation, styles}) => {
     />
   );
 };
-
-const footer = () => <View style={styles.footer} />;
-
-const styles = StyleSheet.create({
-  footer: {width: '100%', height: 75},
-});
 
 List.propTypes = {
   navigation: PropTypes.object,
