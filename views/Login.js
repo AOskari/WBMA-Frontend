@@ -1,7 +1,9 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
+
 import {
   StyleSheet,
   View,
+  Text,
   KeyboardAvoidingView,
   Platform,
   Keyboard,
@@ -16,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
   const {setIsLoggedIn, setUser} = useContext(MainContext);
+  const [showRegister, setShowRegister] = useState(false);
 
   const checkToken = async () => {
     console.log('checking token');
@@ -53,8 +56,18 @@ const Login = ({navigation}) => {
         activeOpacity={1}
       >
         <View style={styles.container}>
-          <LoginForm navigation={navigation} />
-          <RegisterForm navigation={navigation}></RegisterForm>
+          {showRegister && <RegisterForm navigation={navigation} />}
+          {showRegister && (
+            <Text onPress={() => setShowRegister(false)} style={styles.textBtn}>
+              Already a user? Log in here!
+            </Text>
+          )}
+          {!showRegister && <LoginForm navigation={navigation} />}
+          {!showRegister && (
+            <Text onPress={() => setShowRegister(true)} style={styles.textBtn}>
+              New user? Register here!
+            </Text>
+          )}
         </View>
       </TouchableOpacity>
     </KeyboardAvoidingView>
@@ -65,10 +78,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
   },
   view: {
     flex: 1,
+  },
+  textBtn: {
+    textDecorationLine: 'underline',
+    textDecorationColor: 'black',
+    color: 'deepskyblue',
   },
 });
 

@@ -38,11 +38,7 @@ const TabScreen = () => {
       })}
     >
       <Tab.Screen name="Home" options={{headerShown: false}} component={Home} />
-      <Tab.Screen
-        name="Profile"
-        options={{headerShown: false}}
-        component={Profile}
-      />
+      <Tab.Screen name="Profile" component={Profile} />
       {/** Placeholder nav button */}
       <Tab.Screen
         name="Settings"

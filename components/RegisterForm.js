@@ -1,25 +1,19 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Input, Text} from 'react-native-elements';
 import {useUser} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
+import {useForm, Controller} from 'react-hook-form';
 
-const RegisterForm = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
-
-  const handleSubmit = async (e) => {
+const RegisterForm = () => {
+  const onSubmit = async (user) => {
     const {postUser} = useUser();
-    e.preventDefault();
-    console.log(username, password, email, fullName);
-
+    console.log(user);
     const data = {
-      username: username,
-      password: password,
-      email: email,
-      full_name: fullName,
+      username: user.username,
+      password: user.password,
+      email: user.email,
+      full_name: user.fullName,
     };
     try {
       console.log('Register Button pressed');
@@ -30,49 +24,164 @@ const RegisterForm = ({navigation}) => {
     }
   };
 
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: {errors},
+    getValues,
+  } = useForm({mode: 'onBlur'});
+
   return (
     <View style={styles.view}>
       <Text h4>Register</Text>
-      <Input
+      <Controller
+        control={control}
         name="username"
-        type="text"
-        value={username}
-        autoCapitalize={'none'}
-        placeholder={'username'}
-        required
-        onChangeText={(text) => setUsername(text)}
+        render={({field: {onChange, value, onBlur}}) => (
+          <Input
+            type="text"
+            value={value}
+            autoCapitalize={'none'}
+            placeholder={'username'}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            errorMessage={errors.username && errors.username.message}
+          />
+        )}
+        rules={{
+          required: {value: true, message: 'this is required.'},
+          minLength: {
+            value: 3,
+            message: 'Username must be at least 3 characters',
+          },
+          validate: async (value) => {
+            try {
+              const options = {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              };
+
+              const response = await fetch(
+                `https://media.mw.metropolia.fi/wbma/users/username/${value}`,
+                options
+              );
+              const json = await response.json();
+              console.log(json);
+              return json.available;
+            } catch (e) {
+              console.log(`Error at username validation: ${e.message}`);
+            }
+          },
+        }}
       />
-      <Input
+      <Controller
+        control={control}
         name="password"
-        type="text"
-        value={password}
-        autoComplete={'off'}
-        autoCapitalize={'none'}
-        secureTextEntry={true}
-        placeholder={'password'}
-        required
-        onChangeText={(text) => setPassword(text)}
+        render={({field: {onChange, value, onBlur}}) => (
+          <Input
+            type="text"
+            value={value}
+            name="password"
+            autoComplete={'off'}
+            autoCapitalize={'none'}
+            secureTextEntry={true}
+            placeholder={'password'}
+            required
+            onBlur={onBlur}
+            onChangeText={onChange}
+            errorMessage={errors.password && errors.password.message}
+          />
+        )}
+        rules={{
+          required: {value: true, message: 'this is required.'},
+          minLength: {
+            value: 5,
+            message: 'Password must be at least 5 characters',
+          },
+        }}
       />
-      <Input
+      <Controller
+        control={control}
+        name="confirm_password"
+        render={({field: {onChange, value, onBlur}}) => (
+          <Input
+            type="text"
+            value={value}
+            autoComplete={'off'}
+            autoCapitalize={'none'}
+            secureTextEntry={true}
+            placeholder={'retype password'}
+            required
+            onBlur={onBlur}
+            onChangeText={onChange}
+            errorMessage={
+              errors.confirm_password && errors.confirm_password.message
+            }
+          />
+        )}
+        rules={{
+          required: {value: true, message: 'Please retype your password.'},
+          validate: async (value) => {
+            const pass = getValues('password');
+            console.log(value, pass);
+            if (pass == value) {
+              console.log('Passwords match, returning true.');
+              return true;
+            } else {
+              console.log('Passwords dont match, returning false.');
+              return false;
+            }
+          },
+        }}
+      />
+      <Controller
+        control={control}
         name="email"
-        type="email"
-        value={email}
-        autoComplete={'off'}
-        autoCapitalize={'none'}
-        placeholder={'email'}
-        required
-        onChangeText={(text) => setEmail(text)}
+        render={({field: {onChange, value, onBlur}}) => (
+          <Input
+            type="email"
+            value={value}
+            autoComplete={'off'}
+            autoCapitalize={'none'}
+            placeholder={'email'}
+            required
+            onBlur={onBlur}
+            onChangeText={onChange}
+            errorMessage={errors.email && errors.email.message}
+          />
+        )}
+        rules={{
+          required: {value: true, message: 'this is required.'},
+          pattern: /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/,
+        }}
       />
-      <Input
+      <Controller
+        control={control}
         name="full_name"
-        type="text"
-        value={fullName}
-        autoComplete={'off'}
-        autoCapitalize={'none'}
-        placeholder={'full name'}
-        onChangeText={(text) => setFullName(text)}
+        render={({field: {onChange, value, onBlur}}) => (
+          <Input
+            type="text"
+            value={value}
+            autoComplete={'off'}
+            autoCapitalize={'none'}
+            placeholder={'full name'}
+            onBlur={onBlur}
+            onChangeText={onChange}
+            errorMessage={errors.fullName && errors.fullName.message}
+          />
+        )}
+        rules={{
+          minLength: {
+            value: 3,
+            message: 'Full name must be at least 3 characters',
+          },
+        }}
       />
-      <Button title="Register" onPress={handleSubmit} />
+
+      <Button title="Register" onPress={handleSubmit(onSubmit)} />
     </View>
   );
 };

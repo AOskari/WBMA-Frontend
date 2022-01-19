@@ -28,9 +28,6 @@ const Profile = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title} h2>
-        Profile
-      </Text>
       <Card containerStyle={styles.card}>
         <Card.Title style={styles.title}>
           <Icon name="person" color="black" containerStyle={styles.icon} />
@@ -61,7 +58,7 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '100%',
-    height: '70%',
+    height: '80%',
     borderStyle: 'solid',
     borderWidth: 2,
   },
