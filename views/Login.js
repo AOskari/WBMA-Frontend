@@ -17,11 +17,10 @@ import RegisterForm from '../components/RegisterForm';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({navigation}) => {
-  const {setIsLoggedIn, setUser} = useContext(MainContext);
+  const {setUser} = useContext(MainContext);
   const [showRegister, setShowRegister] = useState(false);
 
   const checkToken = async () => {
-    console.log('checking token');
     const {getUserByToken} = useUser();
 
     // Checking if user has already logged in.
@@ -31,11 +30,8 @@ const Login = ({navigation}) => {
       console.log('token', userToken);
       console.log(user == true);
       if (user) {
-        setIsLoggedIn(true);
         setUser(user);
         navigation.navigate('Tabs');
-      } else {
-        setIsLoggedIn(false);
       }
     } catch (e) {
       console.log(`Error at checkToken: ${e.message}`);

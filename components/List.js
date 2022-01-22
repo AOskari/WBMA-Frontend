@@ -5,17 +5,21 @@ import {useMedia} from '../hooks/ApiHooks';
 import PropTypes from 'prop-types';
 import {MainContext} from '../contexts/MainContext';
 
-const List = ({navigation, styles}) => {
+const List = ({navigation, styles, myFiles}) => {
   const {update} = useContext(MainContext);
-  const {mediaArray} = useMedia(update);
+  const {mediaArray, userMediaArray} = useMedia(update);
 
   return (
     <FlatList
       style={styles}
-      data={mediaArray}
+      data={myFiles ? userMediaArray : mediaArray}
       showsVerticalScrollIndicator={false}
       renderItem={({item}) => (
-        <ListItem singleMedia={item} navigation={navigation} />
+        <ListItem
+          singleMedia={item}
+          navigation={navigation}
+          myFiles={myFiles}
+        />
       )}
       keyExtractor={(item, index) => index.toString()}
     />
@@ -25,6 +29,7 @@ const List = ({navigation, styles}) => {
 List.propTypes = {
   navigation: PropTypes.object,
   styles: PropTypes.object,
+  myFiles: PropTypes.bool,
 };
 
 export default List;

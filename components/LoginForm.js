@@ -8,7 +8,7 @@ import {useForm, Controller} from 'react-hook-form';
 import {MainContext} from '../contexts/MainContext';
 
 const LoginForm = ({navigation}) => {
-  const {setUser} = useContext(MainContext);
+  const {setUser, setIsLoggedIn} = useContext(MainContext);
   const {
     control,
     handleSubmit,
@@ -18,16 +18,14 @@ const LoginForm = ({navigation}) => {
   const onSubmit = async (user) => {
     const {postLogin} = useLogin();
 
-    console.log('onSubmit called at LoginForm', user);
-
     const data = {username: user.username, password: user.password};
     try {
-      console.log('Button pressed');
       const response = await postLogin(data);
       setUser(response.user);
-      console.log('response at LoginForm: ', response);
+      setIsLoggedIn(true);
       if (response.message == 'Logged in successfully') {
         await AsyncStorage.setItem('userToken', response.token);
+
         navigation.navigate('Tabs');
       }
     } catch (e) {

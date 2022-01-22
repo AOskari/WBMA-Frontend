@@ -7,15 +7,22 @@ import {getUserImage} from '../hooks/ApiHooks';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Profile = ({navigation}) => {
-  const {isLoggedIn, setIsLoggedIn, user} = useContext(MainContext);
+  const {setIsLoggedIn, user} = useContext(MainContext);
   const {avatar} = getUserImage();
-  console.log('profile isLoggedIn', isLoggedIn);
-  console.log(`User data: ${JSON.stringify(user)}, avatar uri: ${avatar}`);
+
   const logout = async () => {
     try {
+      console.log('Logout called, setting isLoggedIn false');
       setIsLoggedIn(false);
       await AsyncStorage.clear();
       navigation.navigate('Login');
+    } catch (e) {
+      console.log(`Error at logout: ${e.message}`);
+    }
+  };
+  const showMyFiles = async () => {
+    try {
+      navigation.navigate('MyFiles');
     } catch (e) {
       console.log(`Error at logout: ${e.message}`);
     }
@@ -32,10 +39,15 @@ const Profile = ({navigation}) => {
         <View style={styles.imageContainer}>
           <Image source={{uri: avatar}} style={styles.image} />
         </View>
+        <Card.Divider />
         <Text>Fullname: {user.full_name || 'not found'}</Text>
         <Text>email:{user.email}</Text>
-        <Card.Divider />
-        <Button title={'Logout'} onPress={logout} />
+        <Button
+          title={'My files'}
+          buttonStyle={styles.btn}
+          onPress={showMyFiles}
+        />
+        <Button title={'Logout'} onPress={logout} buttonStyle={styles.btn} />
       </Card>
     </SafeAreaView>
   );
@@ -50,10 +62,10 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '100%',
+    resizeMode: 'contain',
   },
   card: {
     width: '100%',
-    height: '80%',
     borderStyle: 'solid',
     borderWidth: 2,
   },
@@ -67,8 +79,11 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: '100%',
     height: '60%',
-    maxHeight: 600,
+    maxHeight: 200,
     marginBottom: 20,
+  },
+  btn: {
+    marginTop: 10,
   },
 });
 Profile.propTypes = {

@@ -7,7 +7,8 @@ const urlWithTag = 'https://media.mw.metropolia.fi/wbma/tags/OA23';
 
 const useMedia = (update) => {
   const [mediaArray, setMediaArray] = useState(JSON);
-  const {setUploading, TAG} = useContext(MainContext);
+  const {setUploading, TAG, isLoggedIn} = useContext(MainContext);
+  const [userMediaArray, setUserMediaArray] = useState(JSON);
 
   const loadMedia = async () => {
     try {
@@ -17,15 +18,43 @@ const useMedia = (update) => {
         array.map(async (item) => {
           const thumbnail = await fetch(url + item.file_id);
           const thumbnailJson = await thumbnail.json();
+
+          // Getting the likes of the image.
+          const likes = await getFavourites(item.file_id);
+          thumbnailJson.likes = likes;
           return thumbnailJson;
         })
       );
+      if (isLoggedIn) {
+        // Get user's own posts.
+        console.log('Fetching user media.');
+        const userToken = await AsyncStorage.getItem('userToken');
+        const options = {
+          method: 'GET',
+          headers: {
+            'x-access-token': userToken,
+          },
+        };
+
+        const userResponse = await fetch(url + 'user', options);
+        const userJson = await userResponse.json();
+        setUserMediaArray(userJson);
+      }
 
       setMediaArray(json);
       console.log(`Media fetch succesful.`);
     } catch (e) {
       console.log(`Error at loadmedia: ${e.message}`);
     }
+  };
+
+  const getFavourites = async (id) => {
+    const response = await fetch(
+      `https://media.mw.metropolia.fi/wbma/favourites/file/${id}`
+    );
+
+    const favourites = await response.json();
+    return Object.keys(favourites).length;
   };
 
   const postMedia = async (data) => {
@@ -36,15 +65,11 @@ const useMedia = (update) => {
       body: data,
     };
 
-    console.log('postmedia formdata:', options.body);
-
     try {
       setUploading(true);
       const response = await fetch(url, options);
-      console.log('Response at postmedia:', response);
       const json = await response.json();
       setUploading(false);
-      console.log('json at postmedia:', json);
       if (response.ok) {
         console.log(`File upload succesful: ${JSON.stringify(json)}`);
       } else return;
@@ -56,8 +81,6 @@ const useMedia = (update) => {
         tag: TAG,
       };
 
-      console.log('tagBody:', JSON.stringify(tagBody));
-
       const tagOptions = {
         method: 'POST',
         headers: {
@@ -66,8 +89,6 @@ const useMedia = (update) => {
         },
         body: JSON.stringify(tagBody),
       };
-
-      console.log('tagOptions: ', tagOptions);
 
       const addTag = await fetch(
         `https://media.mw.metropolia.fi/wbma/tags`,
@@ -81,12 +102,67 @@ const useMedia = (update) => {
     }
   };
 
+  const deleteMedia = async (id) => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const options = {
+      headers: {'x-access-token': userToken},
+      method: 'DELETE',
+    };
+
+    try {
+      setUploading(true);
+      const response = await fetch(url + id, options);
+      const json = await response.json();
+      setUploading(false);
+      if (response.ok) {
+        console.log(`File delete succesful: ${JSON.stringify(json)}`);
+      }
+    } catch (e) {
+      console.log(`Error at deleteMedia: ${e.message}`);
+    }
+  };
+
+  const editMedia = async (data) => {
+    const bodyData = {
+      title: data.title,
+      description: data.description,
+    };
+
+    const userToken = await AsyncStorage.getItem('userToken');
+    const options = {
+      headers: {
+        'x-access-token': userToken,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+      body: JSON.stringify(bodyData),
+    };
+
+    try {
+      setUploading(true);
+      const response = await fetch(url + data.id, options);
+      const json = await response.json();
+      if (response.ok) {
+        console.log(`File modify succesful: ${JSON.stringify(json)}`);
+      }
+    } catch (e) {
+      console.log(`Error at deleteMedia: ${e.message}`);
+    }
+  };
+
   useEffect(async () => {
     loadMedia();
     console.log('useEffect @ useMedia called.');
   }, [update]);
 
-  return {mediaArray, postMedia};
+  return {
+    mediaArray,
+    postMedia,
+    getFavourites,
+    userMediaArray,
+    deleteMedia,
+    editMedia,
+  };
 };
 
 const useLogin = () => {
@@ -104,10 +180,7 @@ const useLogin = () => {
       // TODO: use fetch to send request to login endpoint and return the result as json, handle errors with try/catch and response.ok
       const response = await fetch(url, options);
       const json = await response.json();
-      if (response.ok) {
-        console.log('Logged in user: ', json);
-        return json;
-      }
+      if (response.ok) return json;
     } catch (error) {
       throw new Error(error.message);
     }

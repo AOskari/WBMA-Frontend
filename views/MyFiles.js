@@ -1,25 +1,14 @@
 import React from 'react';
-import {StyleSheet, ImageBackground, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import SafeAreaView from '../components/SafeAreaView';
 import List from '../components/List';
 import PropTypes from 'prop-types';
 
-const Home = ({navigation}) => {
+const MyFiles = ({navigation}) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.viewContainer}>
-        <View style={styles.view}>
-          <ImageBackground
-            source={require('../assets/cat.jpg')}
-            resizeMode="cover"
-            style={styles.image}
-            borderRadius={10}
-          >
-            <Text style={styles.text}>Came to see some cats, eh?</Text>
-          </ImageBackground>
-        </View>
-
-        <List navigation={navigation} styles={styles.list} myFiles={false} />
+        <List navigation={navigation} styles={styles.list} myFiles={true} />
       </View>
     </SafeAreaView>
   );
@@ -60,8 +49,8 @@ const styles = StyleSheet.create({
   },
 });
 
-Home.propTypes = {
+MyFiles.propTypes = {
   navigation: PropTypes.object,
 };
 
-export default Home;
+export default MyFiles;

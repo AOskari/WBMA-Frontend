@@ -1,79 +1,47 @@
 import React, {useContext, useState} from 'react';
-import {StyleSheet, SafeAreaView, View, ActivityIndicator} from 'react-native';
-import {Image, Input, Button} from 'react-native-elements';
+import {StyleSheet, SafeAreaView, ActivityIndicator} from 'react-native';
+import {Input, Button} from 'react-native-elements';
 import PropTypes from 'prop-types';
 import {useForm, Controller} from 'react-hook-form';
 import {MainContext} from '../contexts/MainContext';
 import {useMedia} from '../hooks/ApiHooks';
-import * as ImagePicker from 'expo-image-picker';
-import {useFocusEffect} from '@react-navigation/native';
 
-const Upload = ({navigation}) => {
-  const {source, setSource, uploading} = useContext(MainContext);
-  const {postMedia} = useMedia();
+const Modify = ({navigation, route}) => {
+  const {title, description, fileId} = route.params;
+  const {uploading} = useContext(MainContext);
+  const {editMedia} = useMedia();
   const {update, setUpdate} = useContext(MainContext);
-  const [validTitle, setValidTitle] = useState(false);
-  const [validDesc, setValidDesc] = useState(false);
+  const [validTitle, setValidTitle] = useState(true);
+  const [validDesc, setValidDesc] = useState(true);
 
-  const [title, setTitle] = useState('');
-  const [desc, setDesc] = useState('');
-
-  useFocusEffect(React.useCallback(() => reset(), []));
-
-  const pickImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      // Add fileName and mimeType to the result object:
-      result.fileName = result.uri.split('/').pop();
-      result.mimeType = result.fileName.split('.').pop();
-      console.log(`Media type: ${result.mimeType}`);
-      setSource(result);
-    }
-  };
+  const [titleInput, setTitleInput] = useState(title);
+  const [desc, setDesc] = useState(description);
 
   const onSubmit = async (data) => {
-    if (source.cancelled) {
-      console.log('Image not picked, stopping onSubmit @ Upload.js');
-      return;
-    }
+    console.log(
+      'Data at Modify: ',
+      JSON.stringify(data),
+      'route prams: ',
+      title,
+      description,
+      fileId
+    );
 
-    let extension = source.mimeType;
-
-    if (source.mimeType != ('mp4' || 'mov')) {
-      extension = source.mimeType ? 'png' : 'jpeg';
-    }
-
-    const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('description', data.description);
-    formData.append('file', {
-      uri: source.uri,
-      name: source.fileName,
-      type: `image/${extension}`,
-    });
+    const bodyData = {
+      title: data.title,
+      description: data.description,
+      id: fileId,
+    };
 
     try {
-      await postMedia(formData);
+      await editMedia(bodyData);
       setUpdate(!update);
       setTimeout(() => {
-        reset();
-        navigation.navigate('Home');
+        navigation.navigate('MyFiles');
       }, 400);
     } catch (e) {
       console.log(`Error at onSubmit at Upload.js: ${e.message}`);
     }
-  };
-
-  const reset = () => {
-    setTitle('');
-    setDesc('');
-    setSource('');
   };
 
   const {
@@ -84,14 +52,6 @@ const Upload = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image style={styles.image} source={{uri: source.uri}} />
-      </View>
-      <Button
-        title="Select file"
-        buttonStyle={styles.btn}
-        onPress={pickImage}
-      />
       <ActivityIndicator
         size="large"
         color="black"
@@ -104,7 +64,7 @@ const Upload = ({navigation}) => {
         render={({field: {onChange, value, onBlur}}) => (
           <Input
             type="text"
-            value={title}
+            value={titleInput}
             autoCapitalize={'none'}
             placeholder="title"
             onBlur={onBlur}
@@ -122,7 +82,7 @@ const Upload = ({navigation}) => {
           onChange: (e) => {
             if (e.target.value.length >= 3) setValidTitle(true);
             else setValidTitle(false);
-            setTitle(e.target.value);
+            setTitleInput(e.target.value);
           },
         }}
       />
@@ -154,9 +114,8 @@ const Upload = ({navigation}) => {
           },
         }}
       />
-      <Button title="Reset" buttonStyle={styles.btn} onPress={reset} />
       <Button
-        title="Upload"
+        title="Apply changes"
         buttonStyle={styles.btn}
         onPress={handleSubmit(onSubmit)}
         disabled={!(validTitle && validDesc)}
@@ -174,10 +133,6 @@ const styles = StyleSheet.create({
   btn: {
     margin: 5,
   },
-  imageContainer: {
-    width: '100%',
-    height: 200,
-  },
   image: {
     width: '100%',
     height: '100%',
@@ -190,9 +145,9 @@ const styles = StyleSheet.create({
   },
 });
 
-Upload.propTypes = {
+Modify.propTypes = {
   route: PropTypes.object,
   navigation: PropTypes.object,
 };
 
-export default Upload;
+export default Modify;

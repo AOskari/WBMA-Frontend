@@ -9,6 +9,8 @@ import Profile from '../views/Profile';
 import Single from '../views/Single';
 import Login from '../views/Login';
 import Upload from '../views/Upload';
+import Modify from '../views/Modify';
+import MyFiles from '../views/MyFiles';
 import {MainContext} from '../contexts/MainContext';
 
 const Tab = createBottomTabNavigator();
@@ -55,7 +57,9 @@ const StackScreen = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen name="Single" component={Single} />
+        <Stack.Screen name="Modify" component={Modify} />
         <Stack.Screen name="Upload" component={Upload} />
+        <Stack.Screen name="MyFiles" component={MyFiles} />
       </Stack.Navigator>
     );
   }
